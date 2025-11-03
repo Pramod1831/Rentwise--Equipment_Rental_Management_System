@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="login.NotificationController">
+    <top>
+        <HBox prefHeight="80.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox prefHeight="58.0" style="-fx-background-color: #2e3e83; -fx-background-radius: 15px;" HBox.hgrow="ALWAYS">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="59.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="RENTWISE" textFill="WHITE">
+                                    <font>
+                                        <Font name="Cambria Bold" size="36.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets bottom="10.0" left="20.0" top="10.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="59.0" HBox.hgrow="NEVER">
+                            <children>
+                                <Label fx:id="notificationCountLabel" text="0" style="-fx-text-fill: red; -fx-background-color: white; -fx-padding: 3; -fx-background-radius: 50%;">
+                                    <HBox.margin>
+                                        <Insets top="-10.0" right="-10.0" />
+                                    </HBox.margin>
+                                </Label>
+
+                                <ImageView fx:id="notification_top_icon" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/notification_admin.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets right="10.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+            </padding>
+            <effect>
+                <InnerShadow blurType="ONE_PASS_BOX" />
+            </effect>
+        </HBox>
+    </top>
+    <left>
+        <VBox prefWidth="218.0" BorderPane.alignment="CENTER">
+            <children>
+                <VBox prefHeight="660.0" style="-fx-background-color: #2e3e83; -fx-background-radius: 15px;">
+                    <children>
+                        <HBox prefHeight="58.0" prefWidth="184.0" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="58.0">
+                            <children>
+                                <HBox fx:id="home_HBox" alignment="CENTER_LEFT" prefHeight="53.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" stylesheets="@dashboard.css" HBox.hgrow="ALWAYS">
+                                    <HBox.margin>
+                                        <Insets left="5.0" />
+                                    </HBox.margin>
+                                    <children>
+                                        <ImageView fx:id="home_icon" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Images/home.png" />
+                                            </image>
+                                            <HBox.margin>
+                                                <Insets left="10.0" />
+                                            </HBox.margin>
+                                        </ImageView>
+                                        <Label fx:id="home_label" text="Home" textFill="WHITE">
+                                            <font>
+                                                <Font name="Cambria Bold" size="22.0" />
+                                            </font>
+                                            <HBox.margin>
+                                                <Insets left="10.0" />
+                                            </HBox.margin>
+                                        </Label>
+                                    </children>
+                                    <styleClass>
+                                        <String fx:value="cursor_hand" />
+                                        <String fx:value="menu-hbox" />
+                                    </styleClass>
+                                </HBox>
+                            </children>
+                        </HBox>
+                        <HBox fx:id="addequip_HBox" alignment="CENTER_LEFT" prefHeight="58.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" stylesheets="@dashboard.css">
+                            <children>
+                                <ImageView fx:id="add_equip_icon" fitHeight="37.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/add_items.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets left="20.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <Label fx:id="add_equip_label" text="Add Equip" textFill="WHITE">
+                                    <font>
+                                        <Font name="Cambria Bold" size="22.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets left="10.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" right="10.0" top="10.0" />
+                            </padding>
+                            <styleClass>
+                                <String fx:value="cursor_hand" />
+                                <String fx:value="menu-hbox" />
+                            </styleClass>
+                        </HBox>
+                        <HBox fx:id="issued_HBox" alignment="CENTER_LEFT" prefHeight="58.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" stylesheets="@dashboard.css">
+                            <children>
+                                <ImageView fx:id="issued_icon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/Issued.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets left="20.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <Label fx:id="issued_label" text="Issued" textFill="WHITE">
+                                    <font>
+                                        <Font name="Cambria Bold" size="22.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets left="15.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" right="10.0" top="10.0" />
+                            </padding>
+                            <styleClass>
+                                <String fx:value="cursor_hand" />
+                                <String fx:value="menu-hbox" />
+                            </styleClass>
+                        </HBox>
+                        <HBox fx:id="members_Hbox" alignment="CENTER_LEFT" prefHeight="58.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" stylesheets="@dashboard.css">
+                            <children>
+                                <ImageView fx:id="members_icon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/members.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets left="20.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <Label fx:id="members_label" text="Members" textFill="WHITE">
+                                    <font>
+                                        <Font name="Cambria Bold" size="22.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets left="10.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" right="10.0" top="10.0" />
+                            </padding>
+                            <styleClass>
+                                <String fx:value="cursor_hand" />
+                                <String fx:value="menu-hbox" />
+                            </styleClass>
+                        </HBox>
+                        <HBox fx:id="equipments_HBox" alignment="CENTER_LEFT" prefHeight="58.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" stylesheets="@dashboard.css">
+                            <children>
+                                <ImageView fx:id="equipments_side_icon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/equipments_side_icon.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets left="20.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <Label fx:id="equipments_side_label" text="Equipments" textFill="WHITE">
+                                    <font>
+                                        <Font name="Cambria Bold" size="22.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets left="10.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" right="10.0" top="10.0" />
+                            </padding>
+                            <styleClass>
+                                <String fx:value="cursor_hand" />
+                                <String fx:value="menu-hbox" />
+                            </styleClass>
+                        </HBox>
+                        <HBox fx:id="notification_HBox" alignment="CENTER_LEFT" prefHeight="58.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px; -fx-background-color: #556096;" stylesheets="@dashboard.css">
+                            <children>
+                                <ImageView fx:id="notification_sideview_icon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/notification_admin.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets left="20.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <Label fx:id="sideview_noti_label" text="Notification" textFill="WHITE">
+                                    <font>
+                                        <Font name="Cambria Bold" size="22.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets left="10.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" right="10.0" top="10.0" />
+                            </padding>
+                            <styleClass>
+                                <String fx:value="cursor_hand" />
+                                <String fx:value="menu-hbox" />
+                            </styleClass>
+                        </HBox>
+                        <VBox VBox.vgrow="ALWAYS" />
+                        <HBox fx:id="logoutHBox" alignment="CENTER_LEFT" prefHeight="58.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" stylesheets="@dashboard.css">
+                            <children>
+                                <ImageView fx:id="logout_icon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/logout.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets left="20.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <Label fx:id="logout_label" text="Logout" textFill="WHITE">
+                                    <font>
+                                        <Font name="Cambria Bold" size="22.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets left="10.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <VBox.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </VBox.margin>
+                            <styleClass>
+                                <String fx:value="cursor_hand" />
+                                <String fx:value="button-setting" />
+                            </styleClass>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="15.0" right="10.0" />
+            </padding>
+            <effect>
+                <InnerShadow blurType="ONE_PASS_BOX" />
+            </effect>
+        </VBox>
+    </left>
+    <center>
+        <VBox fx:id="centerVBox" alignment="TOP_CENTER" spacing="20.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label styleClass="dashboard-title" text="Pending Equipment Requests" textFill="#2e3e83">
+                    <font>
+                        <Font name="System Bold" size="28.0" />
+                    </font>
+                </Label>
+                <TableView fx:id="requestsTable" prefHeight="610.0" prefWidth="982.0">
+                    <columns>
+                        <TableColumn fx:id="requestDateColumn" prefWidth="150.0" text="Date" />
+                        <TableColumn fx:id="userNameColumn" prefWidth="200.0" text="User" />
+                        <TableColumn fx:id="equipmentNameColumn" prefWidth="300.0" text="Equipment" />
+                        <TableColumn fx:id="quantityColumn" prefWidth="100.0" text="Quantity" />
+                        <TableColumn fx:id="actionsColumn" prefWidth="200.0" text="Actions" />
+                    </columns>
+                </TableView>
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+        </VBox>
+    </center>
+</BorderPane>

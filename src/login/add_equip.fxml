@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="login.AddEquipController">
+
+    <!-- =================== TOP BAR =================== -->
+    <top>
+        <HBox prefHeight="80.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox prefHeight="58.0" style="-fx-background-color: #2e3e83; -fx-background-radius: 15px;" HBox.hgrow="ALWAYS">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="59.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="RENTWISE" textFill="#fafafa">
+                                    <font>
+                                        <Font name="Cambria Bold" size="36.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets bottom="10.0" left="20.0" top="10.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="59.0" HBox.hgrow="NEVER">
+                            <children>
+                                <ImageView fx:id="notification_top_icon" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/notification_admin.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets right="10.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <ImageView fx:id="profile_icon" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/account_admin.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets right="20.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+            </padding>
+            <effect>
+                <InnerShadow blurType="ONE_PASS_BOX" />
+            </effect>
+        </HBox>
+    </top>
+
+    <!-- =================== LEFT SIDE MENU =================== -->
+    <left>
+        <VBox prefWidth="218.0" BorderPane.alignment="CENTER">
+            <children>
+                <VBox prefHeight="660.0" style="-fx-background-color: #2e3e83; -fx-background-radius: 15px;">
+                    <children>
+                        <HBox prefHeight="58.0" prefWidth="184.0" />
+                        <!-- HOME -->
+                        <HBox alignment="CENTER_LEFT" onMouseClicked="#handleHomeClick" prefHeight="58.0">
+                            <children>
+                                <HBox fx:id="homeHBox" alignment="CENTER_LEFT" prefHeight="53.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" stylesheets="@dashboard.css" HBox.hgrow="ALWAYS">
+                                    <HBox.margin>
+                                        <Insets left="5.0" />
+                                    </HBox.margin>
+                                    <children>
+                                        <ImageView fx:id="home_icon" fitHeight="35.0" fitWidth="35.0" onMouseClicked="#handleHomeClick" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Images/home.png" />
+                                            </image>
+                                            <HBox.margin>
+                                                <Insets left="10.0" />
+                                            </HBox.margin>
+                                        </ImageView>
+                                        <Label fx:id="home_label" onMouseClicked="#handleHomeClick" text="Home" textFill="WHITE">
+                                            <font>
+                                                <Font name="Cambria Bold" size="22.0" />
+                                            </font>
+                                            <HBox.margin>
+                                                <Insets left="10.0" />
+                                            </HBox.margin>
+                                        </Label>
+                                    </children>
+                                    <styleClass>
+                                        <String fx:value="cursor_hand" />
+                                        <String fx:value="menu-hbox" />
+                                    </styleClass>
+                                </HBox>
+                            </children>
+                        </HBox>
+
+                        <!-- ADD EQUIP -->
+                        <HBox fx:id="addequipHBox" alignment="CENTER_LEFT" prefHeight="58.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" stylesheets="@dashboard.css">
+                            <children>
+                                <ImageView fx:id="add_equip_icon" fitHeight="37.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/add_items.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets left="20.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <Label fx:id="add_equip_label" text="Add Equip" textFill="WHITE">
+                                    <font>
+                                        <Font name="Cambria Bold" size="22.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets left="10.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <styleClass>
+                                <String fx:value="cursor_hand" />
+                                <String fx:value="menu-hbox" />
+                        <String fx:value="members_box" />
+                            </styleClass>
+                        </HBox>
+
+                        <!-- ISSUED -->
+                        <HBox fx:id="issuedHBox" alignment="CENTER_LEFT" prefHeight="58.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" stylesheets="@dashboard.css">
+                            <children>
+                                <ImageView fx:id="issued_icon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/Issued.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets left="20.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <Label fx:id="issued_label" text="Issued" textFill="WHITE">
+                                    <font>
+                                        <Font name="Cambria Bold" size="22.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets left="15.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <styleClass>
+                                <String fx:value="cursor_hand" />
+                                <String fx:value="menu-hbox" />
+                            </styleClass>
+                        </HBox>
+
+                        <!-- MEMBERS -->
+                        <HBox fx:id="membersHBox" alignment="CENTER_LEFT" prefHeight="58.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" stylesheets="@dashboard.css">
+                            <children>
+                                <ImageView fx:id="members_icon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/members.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets left="20.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <Label fx:id="members_label" text="Members" textFill="WHITE">
+                                    <font>
+                                        <Font name="Cambria Bold" size="22.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets left="10.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <styleClass>
+                                <String fx:value="cursor_hand" />
+                                <String fx:value="menu-hbox" />
+                            </styleClass>
+                        </HBox>
+
+                        <!-- NOTIFICATION -->
+                        <HBox fx:id="equipmentsHBox" alignment="CENTER_LEFT" prefHeight="58.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" stylesheets="@dashboard.css">
+                            <children>
+                                <ImageView fx:id="equipments_side_icon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/equipments_side_icon.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets left="20.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <Label fx:id="equipments_side_label" text="Equipments" textFill="WHITE">
+                                    <font>
+                                        <Font name="Cambria Bold" size="22.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets left="10.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <styleClass>
+                                <String fx:value="cursor_hand" />
+                                <String fx:value="menu-hbox" />
+                            </styleClass>
+                        </HBox>
+
+                        <!-- SETTINGS -->
+                        <HBox fx:id="notificationHBox" alignment="CENTER_LEFT" prefHeight="58.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" stylesheets="@dashboard.css">
+                            <children>
+                                <ImageView fx:id="notification_sideview_icon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/notification_admin.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets left="20.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <Label fx:id="sideview_noti_label" text="Notification" textFill="WHITE">
+                                    <font>
+                                        <Font name="Cambria Bold" size="22.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets left="10.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <styleClass>
+                                <String fx:value="cursor_hand" />
+                                <String fx:value="menu-hbox" />
+                            </styleClass>
+                        </HBox>
+
+                        <VBox VBox.vgrow="ALWAYS" />
+
+                        <!-- LOGOUT -->
+                        <HBox fx:id="logoutHBox" alignment="CENTER_LEFT" onMouseClicked="#handleLogout" prefHeight="58.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" stylesheets="@dashboard.css">
+                            <children>
+                                <ImageView fx:id="logout_icon" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleLogout" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Images/logout.png" />
+                                    </image>
+                                    <HBox.margin>
+                                        <Insets left="20.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <Label fx:id="logout_label" onMouseClicked="#handleLogout" text="Logout" textFill="WHITE">
+                                    <font>
+                                        <Font name="Cambria Bold" size="22.0" />
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets left="10.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <styleClass>
+                                <String fx:value="cursor_hand" />
+                                <String fx:value="button-setting" />
+                            </styleClass>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" />
+                     </VBox.margin>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="15.0" right="10.0" />
+            </padding>
+            <effect>
+                <InnerShadow blurType="ONE_PASS_BOX" />
+            </effect>
+        </VBox>
+    </left>
+    <!-- =================== CENTER FORM =================== -->
+    <center>
+        <StackPane alignment="CENTER" styleClass="form-container">
+            <children>
+                <VBox alignment="TOP_CENTER" spacing="25" styleClass="form-box">
+                    <children>
+                        <Label styleClass="form-title" stylesheets="@dashboard.css" text="Add New Equipment" />
+
+                        <GridPane alignment="CENTER" hgap="15" stylesheets="@dashboard.css" vgap="15">
+                            <children>
+                                <Label styleClass="form-label" stylesheets="@dashboard.css" text="Equipment Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <TextField fx:id="nameField" styleClass="form-field" stylesheets="@dashboard.css" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                <Label styleClass="form-label" stylesheets="@dashboard.css" text="Quantity:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="quantityField" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                <Label styleClass="form-label" stylesheets="@dashboard.css" text="Image:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <Button fx:id="chooseImageButton" onAction="#handleChooseImage" styleClass="form-button" text="Choose Image" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                                <ImageView fx:id="imageView" fitHeight="120" fitWidth="120" preserveRatio="true" styleClass="image-preview" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                                <Button onAction="#handleSubmit" styleClass="submit-button" text="Add Equipment" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                            </children>
+                     <columnConstraints>
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+                        </GridPane>
+                    </children>
+                </VBox>
+            </children>
+        </StackPane>
+    </center>
+
+
+</BorderPane>
