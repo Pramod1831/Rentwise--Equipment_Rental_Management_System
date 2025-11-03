@@ -1,0 +1,13 @@
+# IntelliJ IDEA project files
+.idea/
+*.iml
+
+# Compiled output and build artifacts
+/out/
+/target/
+*.class
+*.jar
+*.war
+
+# 🛑 CRITICAL FIX: Ignore the large runtime/lib folder
+/runtime/
