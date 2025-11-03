@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
@@ -28,3 +29,20 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+=======
+# IntelliJ IDEA project files
+.idea/
+*.iml
+
+# Compiled output and build artifacts
+/out/
+/target/
+*.class
+*.jar
+*.war
+
+# 🛑 CRITICAL FIX: Ignore the large runtime/lib folder
+/runtime/
+>>>>>>> 491afd81218a47d148534a8c3fb9169f408650fb
+
+/RentWise/runtime/
