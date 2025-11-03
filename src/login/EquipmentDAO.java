@@ -14,17 +14,9 @@ public class EquipmentDAO {
             "INSERT INTO equipments (name, quantity, issued, image_data) VALUES (?, ?, ?, ?)";
 
     private static Connection getConnection() throws SQLException {
-        // NOTE: Uses the static method from DatabaseConnection.
         return DatabaseConnection.getConnection();
     }
 
-    // ==========================================================
-    // CRITICAL FIXES FOR APPROVAL / RETURN LOGIC
-    // ==========================================================
-
-    /**
-     * Retrieves the current status of a specific request.
-     */
     public static String getRequestStatusById(int requestId) {
         String status = null;
         String query = "SELECT status FROM request WHERE id = ?";
@@ -44,24 +36,15 @@ public class EquipmentDAO {
         return status;
     }
 
-    /**
-     * Admin action to approve a request.
-     * * 💥 FIX 1: This method now checks the status and calls the appropriate handler
-     * (approveLoan or approveReturn).
-     */
     public static boolean approveRequest(int requestId, int equipmentId, int requestedQuantity) {
-        // 1. Check the request status to determine the action needed
         String currentStatus = getRequestStatusById(requestId);
 
         if ("Pending".equals(currentStatus)) {
-            // New Loan Request
             System.out.println("Processing Loan Approval for Request ID: " + requestId);
             return approveNewLoan(requestId, equipmentId, requestedQuantity);
 
         } else if ("Return Pending".equals(currentStatus)) {
-            // Return Request (The correct logic)
             System.out.println("Processing Return Approval for Request ID: " + requestId);
-            // Re-using the logic from your existing acceptReturn method.
             return acceptReturn(requestId, equipmentId, requestedQuantity);
 
         } else {
@@ -70,28 +53,20 @@ public class EquipmentDAO {
         }
     }
 
-    /**
-     * Executes the logic for a new equipment loan approval.
-     */
     private static boolean approveNewLoan(int requestId, int equipmentId, int requestedQuantity) {
         Connection conn = null;
-        // Loan logic: Status = 'Approved', issued = issued + quantity
         String updateRequestSql = "UPDATE request SET status = 'Approved', action_date = NOW() WHERE id = ?";
-        // NOTE: Assuming your table 'equipments' correctly tracks remaining based on 'issued' and 'quantity'.
-        // If 'remaining' is a column, you'd also need to decrement it here.
         String updateEquipmentSql = "UPDATE equipments SET issued = issued + ? WHERE id = ?";
 
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
 
-            // Step 1: Update the request status
             try (PreparedStatement reqStmt = conn.prepareStatement(updateRequestSql)) {
                 reqStmt.setInt(1, requestId);
                 reqStmt.executeUpdate();
             }
 
-            // Step 2: Update the issued quantity for the equipment
             try (PreparedStatement equipStmt = conn.prepareStatement(updateEquipmentSql)) {
                 equipStmt.setInt(1, requestedQuantity);
                 equipStmt.setInt(2, equipmentId);
@@ -116,11 +91,6 @@ public class EquipmentDAO {
             if (conn != null) {
                 try {
                     conn.setAutoCommit(true);
-                    // Connection is managed by DatabaseConnection.getConnection(), if it's static/singleton,
-                    // closing here might impact other threads/uses. For a single-threaded JavaFX app,
-                    // it's generally fine, but if DatabaseConnection returns a new connection every time, it's safer.
-                    // Assuming DatabaseConnection returns a new connection or it's safe to close a local one:
-                    // conn.close();
                 } catch (SQLException e) {
                     System.err.println("Error closing connection: " + e.getMessage());
                 }
@@ -128,15 +98,10 @@ public class EquipmentDAO {
         }
     }
 
-    /**
-     * Admin accepts the returned equipment.
-     * * 💥 FIX 2: Correctly sets status to 'Returned' and DECREMENTS 'issued'.
-     * This logic is now correctly routed from approveRequest() when status is 'Return Pending'.
-     */
+
     public static boolean acceptReturn(int requestId, int equipmentId, int quantity) {
         Connection conn = null;
 
-        // Return logic: Status = 'Returned', issued = issued - quantity
         String updateRequestSql = "UPDATE request SET status = 'Returned', action_date = NOW() WHERE id = ?";
         String updateEquipmentSql = "UPDATE equipments SET issued = issued - ? WHERE id = ?";
 
@@ -144,13 +109,11 @@ public class EquipmentDAO {
             conn = getConnection();
             conn.setAutoCommit(false);
 
-            // Step 1: Update the request status to 'Returned'
             try (PreparedStatement updateRequestStmt = conn.prepareStatement(updateRequestSql)) {
                 updateRequestStmt.setInt(1, requestId);
                 updateRequestStmt.executeUpdate();
             }
 
-            // Step 2: Update the issued quantity for the equipment (decrement)
             try (PreparedStatement updateEquipmentStmt = conn.prepareStatement(updateEquipmentSql)) {
                 updateEquipmentStmt.setInt(1, quantity);
                 updateEquipmentStmt.setInt(2, equipmentId);
@@ -184,16 +147,7 @@ public class EquipmentDAO {
         }
     }
 
-
-    // ==========================================================
-    // ALL OTHER EXISTING DAO METHODS (Unchanged but included for completeness)
-    // ==========================================================
-
-    /**
-     * Adds a new equipment record.
-     */
     public static void addEquipment(String name, int quantity, int i, byte[] imageData) throws SQLException {
-        // When adding new equipment, 'issued' is 0.
         int issued = 0;
 
         try (Connection conn = getConnection();
@@ -217,9 +171,6 @@ public class EquipmentDAO {
         }
     }
 
-    /**
-     * Retrieves all equipment records. Calculates 'remaining' in Java.
-     */
     public static List<EquipmentModel> getAllEquipments() {
         List<EquipmentModel> equipments = new ArrayList<>();
 
@@ -234,7 +185,6 @@ public class EquipmentDAO {
                 int quantity = rs.getInt("quantity");
                 int issued = rs.getInt("issued");
 
-                // Calculate 'remaining' in Java.
                 int remaining = quantity - issued;
 
                 equipments.add(new EquipmentModel(
@@ -255,9 +205,6 @@ public class EquipmentDAO {
         return equipments;
     }
 
-    /**
-     * Deletes an equipment record.
-     */
     public static boolean deleteEquipment(int equipmentId) {
         String query = "DELETE FROM equipments WHERE id = ?";
 
@@ -275,11 +222,6 @@ public class EquipmentDAO {
         }
     }
 
-    /**
-     * Updates the total quantity of equipment, ensuring new quantity is not less than issued quantity.
-     *
-     * @return true if update successful, false otherwise.
-     */
     public static boolean updateEquipmentQuantity(int equipmentId, int newQuantity) {
         // Step 1: Check the currently issued quantity to prevent quantity < issued
         int issuedQuantity = 0;
@@ -309,7 +251,6 @@ public class EquipmentDAO {
         }
 
 
-        // Step 2: Perform the update
         String updateQuery = "UPDATE equipments SET quantity = ? WHERE id = ?";
 
         try (Connection conn = getConnection();
@@ -328,11 +269,8 @@ public class EquipmentDAO {
         }
     }
 
-    /**
-     * Fetches the count of pending equipment requests.
-     */
+
     public static int getPendingRequestCount() {
-        // This method is now obsolete as AdminDashboardController uses getRequestsByStatus
         System.out.println("Note: getPendingRequestCount is deprecated. Use getRequestsByStatus().size()");
         return 0;
     }
@@ -368,12 +306,8 @@ public class EquipmentDAO {
         return null;
     }
 
-    /**
-     * Retrieves all Pending request records for Admin dashboard.
-     */
     public static List<RequestModel> getPendingRequests() {
         List<RequestModel> requests = new ArrayList<>();
-        // Query must include action_date
         String query = "SELECT id, user_id, equipment_id, quantity_requested, status, request_date, action_date FROM request WHERE status = 'Pending'";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query);
@@ -415,9 +349,6 @@ public class EquipmentDAO {
         return name;
     }
 
-    /**
-     * Retrieves the name of a user by their ID.
-     */
     public static String getUserNameById(int userId) {
         String name = "Unknown User";
         String query = "SELECT username FROM user_account WHERE account_id = ?";
@@ -437,10 +368,6 @@ public class EquipmentDAO {
         return name;
     }
 
-
-    /**
-     * Admin action to reject a request, only changing its status.
-     */
     public static boolean rejectRequest(int requestId) {
         String updateRequestSql = "UPDATE request SET status = 'Rejected', action_date = NOW() WHERE id = ?";
 
@@ -477,12 +404,8 @@ public class EquipmentDAO {
         }
     }
 
-    /**
-     * Retrieves requests for a specific user.
-     */
     public static List<RequestModel> getUserRequests(int userId) {
         List<RequestModel> requests = new ArrayList<>();
-        // Query must include action_date
         String query = "SELECT id, user_id, equipment_id, quantity_requested, status, request_date, action_date " +
                 "FROM request WHERE user_id = ? ORDER BY request_date DESC";
 
@@ -510,9 +433,6 @@ public class EquipmentDAO {
         return requests;
     }
 
-    /**
-     * User initiates the return process. Sets the status to 'Return Pending'.
-     */
     public static boolean requestReturn(int requestId) {
         String sql = "UPDATE request SET status = 'Return Pending' WHERE id = ?";
 
@@ -530,13 +450,8 @@ public class EquipmentDAO {
         }
     }
 
-
-    /**
-     * Fetches requests with a specific status, e.g., 'Pending' or 'Return Pending'.
-     */
     public static List<RequestModel> getRequestsByStatus(String status) {
         List<RequestModel> requests = new ArrayList<>();
-        // Query must include action_date
         String query = "SELECT id, user_id, equipment_id, quantity_requested, status, request_date, action_date FROM request WHERE status = ?";
 
         try (Connection conn = getConnection();
@@ -563,12 +478,8 @@ public class EquipmentDAO {
         return requests;
     }
 
-    /**
-     * Retrieves all requests requiring Admin action: 'Pending' (new) and 'Return Pending' (return).
-     */
     public static List<RequestModel> getAdminActionRequests() {
         List<RequestModel> requests = new ArrayList<>();
-        // This SQL query is the key: it correctly selects both statuses.
         String query = "SELECT id, user_id, equipment_id, quantity_requested, status, request_date, action_date FROM request WHERE status IN ('Pending', 'Return Pending') ORDER BY request_date ASC";
 
         try (Connection conn = getConnection();

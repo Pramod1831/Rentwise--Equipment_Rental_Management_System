@@ -27,7 +27,6 @@ import java.util.ResourceBundle;
 
 public class UserNotificationController implements Initializable {
 
-    // --- FXML Table Elements ---
     @FXML private TableView<RequestDisplayModel> notificationsTable;
     @FXML private TableColumn<RequestDisplayModel, String> equipmentNameColumn;
     @FXML private TableColumn<RequestDisplayModel, Integer> quantityColumn;
@@ -36,14 +35,12 @@ public class UserNotificationController implements Initializable {
     @FXML private TableColumn<RequestDisplayModel, String> approvalDateColumn;
     @FXML private TableColumn<RequestDisplayModel, Void> actionColumn;
 
-    // --- FXML Navigation Elements ---
     @FXML private HBox homeHBox;
     @FXML private HBox equipmentsHBox;
     @FXML private HBox issuedHBox;
     @FXML private HBox notificationHBox;
     @FXML private HBox logoutHBox;
 
-    // --- FXML Icon Elements ---
     @FXML private ImageView home_icon;
     @FXML private ImageView received_icon;
     @FXML private ImageView equipments_side_icon;
@@ -66,10 +63,6 @@ public class UserNotificationController implements Initializable {
         setupNavigationHandlers();
         loadIcons();
     }
-
-    //----------------------------------------------------------------------
-    //                           TABLE SETUP
-    //----------------------------------------------------------------------
 
     private void setupTableColumns() {
         equipmentNameColumn.setCellValueFactory(new PropertyValueFactory<>("equipmentName"));
@@ -141,10 +134,6 @@ public class UserNotificationController implements Initializable {
         });
     }
 
-    //----------------------------------------------------------------------
-    //                           ACTION HANDLER
-    //----------------------------------------------------------------------
-
     private void handleReturnAction(RequestDisplayModel request) {
         int choice = JOptionPane.showConfirmDialog(
                 null,
@@ -164,10 +153,6 @@ public class UserNotificationController implements Initializable {
             loadUserNotifications();
         }
     }
-
-    //----------------------------------------------------------------------
-    //                           NAVIGATION
-    //----------------------------------------------------------------------
 
     private void setupNavigationHandlers() {
         if (logoutHBox != null) logoutHBox.setOnMouseClicked(event -> handleLogout());
@@ -195,9 +180,6 @@ public class UserNotificationController implements Initializable {
         }
     }
 
-    //----------------------------------------------------------------------
-    //                   IMAGE LOADING (Includes null checks)
-    //----------------------------------------------------------------------
 
     private void loadIcons() {
         if (home_icon != null) home_icon.setImage(loadImage("home.png"));
@@ -213,9 +195,7 @@ public class UserNotificationController implements Initializable {
         if (logout_icon != null) logout_icon.setImage(loadImage("logout.png"));
     }
 
-    /**
-     * Loads an image, prioritizing resource path (for final JAR) then file path (for IDE).
-     */
+
     private Image loadImage(String fileName) {
         try {
             File file = new File("Images/" + fileName);

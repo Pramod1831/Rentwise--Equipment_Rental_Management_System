@@ -29,7 +29,7 @@ public class LoginController implements Initializable {
     @FXML private ImageView brandingImageView;
     @FXML private ImageView lockImageView;
     @FXML private TextField usernameTextField;
-    @FXML private TextField enterPasswordField; // This holds the plain-text password entered by the user
+    @FXML private TextField enterPasswordField; 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

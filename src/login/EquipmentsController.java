@@ -29,11 +29,6 @@ import java.util.ResourceBundle;
 
 public class EquipmentsController implements Initializable {
 
-    // ==========================================================
-    // 1. FXML Fields (Sidebar/Navigation)
-    // ==========================================================
-
-    // Labels & Icons (Existing)
     @FXML private ImageView home_icon;
     @FXML private ImageView add_equip_icon;
     @FXML private ImageView issued_icon;
@@ -44,7 +39,6 @@ public class EquipmentsController implements Initializable {
     @FXML private ImageView notification_sideview_icon;
     @FXML private ImageView equipments_side_icon; // Represents the current page icon
 
-    // NEW: HBox Navigation Containers
     @FXML private HBox homeHBox;
     @FXML private HBox addequipHBox;
     @FXML private HBox issuedHBox;
@@ -61,10 +55,8 @@ public class EquipmentsController implements Initializable {
     @FXML private Label home_label;
     @FXML private Label equipments_side_label;
 
-    // Core content container
     @FXML private FlowPane equipmentFlowPane;
 
-    // Other ImageViews (Dashboard counters - not used on this page, but included)
     @FXML private ImageView equipments_dashboard_icon;
     @FXML private ImageView issued_dashboard_icon;
     @FXML private ImageView remaining_dashboard_icon;
@@ -75,7 +67,6 @@ public class EquipmentsController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadEquipments();
         loadImages();
-
 
         if (logout_icon != null) logout_icon.setOnMouseClicked(this::handleLogout);
         if (logout_label != null) logout_label.setOnMouseClicked(this::handleLogout);
@@ -99,10 +90,6 @@ public class EquipmentsController implements Initializable {
         if (notification_sideview_icon != null) notification_sideview_icon.setOnMouseClicked(this::handleNotificationClick);
         if (notification_top_icon != null) notification_top_icon.setOnMouseClicked(this::handleNotificationClick);
     }
-
-    // ==========================================================
-    // 2. Navigation Setup
-    // ==========================================================
 
     private void navigateTo(String fxmlFile, MouseEvent event) {
         try {
@@ -136,16 +123,12 @@ public class EquipmentsController implements Initializable {
     private void handleLogout(MouseEvent event) {
         System.out.println("User is attempting to log out.");
         try {
-            // FIX: Use the specific method to get and close the active connection
             Connection conn = DatabaseConnection.getActiveConnection(); // Assuming this exists
             if (conn != null && !conn.isClosed()) {
                 conn.close();
                 DatabaseConnection.clearActiveConnection(); // Assuming this exists
                 System.out.println("Database connection closed on logout.");
             }
-            // Assuming SessionManager.clearSession() exists
-            // SessionManager.clearSession();
-
             navigateTo("login.fxml", event);
         } catch (Exception e) {
             System.err.println("Unexpected error during logout: " + e.getMessage());
@@ -153,10 +136,6 @@ public class EquipmentsController implements Initializable {
             navigateTo("login.fxml", event);
         }
     }
-
-    // ==========================================================
-    // 3. EQUIPMENT LOADING AND CARD GENERATION (Unchanged)
-    // ==========================================================
 
     private void loadEquipments() {
         if (equipmentFlowPane == null) return;
@@ -177,7 +156,6 @@ public class EquipmentsController implements Initializable {
         card.getStyleClass().addAll("equipment-card");
         card.setPadding(new Insets(10));
 
-        // 1. Image View
         ImageView imageView = new ImageView();
         imageView.setFitHeight(150);
         imageView.setFitWidth(150);
@@ -196,17 +174,14 @@ public class EquipmentsController implements Initializable {
             imageView.setImage(null);
         }
 
-        // 2. Name Label
         Label nameLabel = new Label(equipment.getName());
         nameLabel.getStyleClass().add("equipment-name");
 
-        // 3. Quantity Label
         Label quantityLabel = new Label(String.format("Total: %d | Remaining: %d",
                 equipment.getQuantity(),
                 equipment.getRemaining()));
         quantityLabel.getStyleClass().add("equipment-quantity");
 
-        // 4. Buttons (Edit and Delete)
         Button editBtn = new Button("Edit Quantity");
         editBtn.getStyleClass().addAll("card-button", "edit-button");
         editBtn.setOnAction(e -> handleEditEquipment(equipment));
@@ -222,10 +197,6 @@ public class EquipmentsController implements Initializable {
         card.getChildren().addAll(imageView, nameLabel, quantityLabel, buttonBox);
         return card;
     }
-
-    // ==========================================================
-    // 4. ACTION HANDLERS: DELETE AND EDIT (Unchanged)
-    // ==========================================================
 
     private void handleDeleteEquipment(EquipmentModel equipment) {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
@@ -305,12 +276,7 @@ public class EquipmentsController implements Initializable {
         alert.showAndWait();
     }
 
-    // ==========================================================
-    // 5. IMAGE LOADING UTILITY (Unchanged)
-    // ==========================================================
-
     private void loadImages() {
-        // ... (Image loading code is correct and unchanged)
         String BASE_PATH = "Images/";
 
         try {

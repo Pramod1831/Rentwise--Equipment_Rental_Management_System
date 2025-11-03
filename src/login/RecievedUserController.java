@@ -17,8 +17,8 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection; // Needed for logout
-import java.sql.SQLException; // Needed for logout
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 public class RecievedUserController implements Initializable {
 
-    // FXML fields linked to the TableView
     @FXML private TableView<RequestDisplayModel> receivedTable;
     @FXML private TableColumn<RequestDisplayModel, String> requestDateColumn;
     @FXML private TableColumn<RequestDisplayModel, String> equipmentNameColumn;
@@ -34,14 +33,12 @@ public class RecievedUserController implements Initializable {
     @FXML private TableColumn<RequestDisplayModel, String> statusColumn;
     @FXML private TableColumn<RequestDisplayModel, Void> actionsColumn;
 
-    // FXML fields for sidebar HBoxes
     @FXML private HBox logoutHBox;
     @FXML private HBox homeHBox;
     @FXML private HBox issuedHBox; // Current screen's HBox
     @FXML private HBox equipmentsHBox;
     @FXML private HBox notificationHBox;
 
-    // FXML fields for sidebar/top bar icons
     @FXML private ImageView home_icon;
     @FXML private ImageView received_icon; // The main icon for this view
     @FXML private ImageView equipments_side_icon;
@@ -55,29 +52,21 @@ public class RecievedUserController implements Initializable {
     @FXML private ImageView remaining_dashboard_icon;
     @FXML private ImageView pending_req_dashboard_icon;
 
-    // NOTE: Removed redundant ImageView fields: equipments_icon, received_card_icon,
-    // remaining_dashboard_icon, pending_req_dashboard_icon, as they belong to the dashboard view.
-
     private int currentUserId;
     private ObservableList<RequestDisplayModel> userReceivedItems = FXCollections.observableArrayList();
 
-    /**
-     * Standard initializer method called by the FXMLLoader.
-     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         currentUserId = SessionManager.getLoggedInUserId();
         if (currentUserId == -1) {
             System.err.println("ERROR: No active user session found. Please log in.");
-            // Optionally, navigate to login screen here
             return;
         }
 
         loadIcons();
         setupNavigationHandlers();
 
-        // Setup Table Columns
         requestDateColumn.setCellValueFactory(new PropertyValueFactory<>("requestDate"));
         equipmentNameColumn.setCellValueFactory(new PropertyValueFactory<>("equipmentName"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
@@ -89,13 +78,6 @@ public class RecievedUserController implements Initializable {
         receivedTable.setItems(userReceivedItems);
     }
 
-    // ----------------------------------------------------------------------
-    // --- Core Table and Action Logic ---
-    // ----------------------------------------------------------------------
-
-    /**
-     * Sets up the action column with a 'Return Item' button visible only for 'Approved' items.
-     */
     private void setupActionsColumn() {
         actionsColumn.setCellFactory(param -> new TableCell<RequestDisplayModel, Void>() {
             private final Button returnButton = new Button("Return Item");
@@ -118,11 +100,9 @@ public class RecievedUserController implements Initializable {
                     RequestDisplayModel displayModel = getTableView().getItems().get(getIndex());
                     String status = displayModel.getRequestObject().getStatus();
 
-                    // Show the Return button ONLY if the item is 'Approved' (currently issued)
                     if ("Approved".equals(status)) {
                         setGraphic(returnButton);
                     } else {
-                        // Hide the button for other statuses like 'Return Pending', 'Returned', etc.
                         setGraphic(null);
                     }
                 }
@@ -130,20 +110,15 @@ public class RecievedUserController implements Initializable {
         });
     }
 
-    /**
-     * Handles the user clicking the 'Return Item' button by setting the request status to 'Return Pending'.
-     */
     private void handleReturn(RequestDisplayModel displayModel) {
         RequestModel request = displayModel.getRequestObject();
 
-        // NOTE: This assumes EquipmentDAO.requestReturn(int requestId) is implemented and static.
         boolean success = EquipmentDAO.requestReturn(request.getId());
 
         if (success) {
-            request.setStatus("Return Pending"); // Update in-memory for immediate view
+            request.setStatus("Return Pending");
             showAlert("Return Requested", "Return for " + displayModel.getEquipmentName() + " has been submitted to the Admin for final check.", Alert.AlertType.INFORMATION);
 
-            // Refresh the table data and UI
             loadUserReceivedItems();
             receivedTable.refresh();
         } else {
@@ -151,14 +126,9 @@ public class RecievedUserController implements Initializable {
         }
     }
 
-    /**
-     * Loads the user's requests that have been approved, are pending return, or have been returned.
-     */
     private void loadUserReceivedItems() {
-        // NOTE: This assumes EquipmentDAO.getUserRequests and EquipmentDAO.getEquipmentNameById are implemented and static.
         List<RequestModel> rawRequests = EquipmentDAO.getUserRequests(currentUserId);
 
-        // Filter for relevant statuses
         List<RequestModel> relevantRequests = rawRequests.stream()
                 .filter(req -> "Approved".equals(req.getStatus()) ||
                         "Returned".equals(req.getStatus()) ||
@@ -174,13 +144,7 @@ public class RecievedUserController implements Initializable {
         }
     }
 
-    // ----------------------------------------------------------------------
-    // --- Navigation and Utility Methods ---
-    // ----------------------------------------------------------------------
 
-    /**
-     * Sets up click handlers for sidebar HBoxes.
-     */
     private void setupNavigationHandlers() {
         if (logoutHBox != null) {
             logoutHBox.setOnMouseClicked(event -> handleLogout());
@@ -199,12 +163,8 @@ public class RecievedUserController implements Initializable {
         }
     }
 
-    /**
-     * Handles navigation to a new FXML file.
-     */
     private void navigateTo(String fxmlFile, HBox sourceHBox) {
         try {
-            // FXML files are typically in the same package (login/)
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(fxmlFile)));
             Parent root = loader.load();
 
@@ -234,9 +194,6 @@ public class RecievedUserController implements Initializable {
         }
     }
 
-    /**
-     * Loads icons into the ImageViews, using null checks.
-     */
     private void loadIcons() {
         if (home_icon != null) home_icon.setImage(loadImage("home.png"));
         if (received_icon != null) received_icon.setImage(loadImage("Issued.png"));
@@ -259,16 +216,11 @@ public class RecievedUserController implements Initializable {
         alert.showAndWait();
     }
 
-    /**
-     * Handles the user logout process, clearing the session and closing the connection.
-     */
     private void handleLogout() {
         System.out.println("User is attempting to log out.");
         try {
-            // 1. Clear the static session data
             SessionManager.clearSession();
 
-            // 2. ⭐ CORRECTED: Use DatabaseConnection to get and close the session connection
             Connection activeConnection = DatabaseConnection.getActiveConnection();
             if (activeConnection != null) {
                 activeConnection.close();
@@ -276,8 +228,6 @@ public class RecievedUserController implements Initializable {
                 System.out.println("Database: Active connection closed and cleared on logout.");
             }
 
-            // 3. Navigate to login screen
-            // The FXML file should be relative to the class path, which is "login.fxml"
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("login.fxml")));
             Parent root = loader.load();
 

@@ -15,7 +15,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane; // Added for the side-view HBox
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -31,10 +30,8 @@ import java.util.ResourceBundle;
 
 public class UserDashboardController implements Initializable {
 
-    // The notification badge label (must be public or use @FXML)
     @FXML public Label notificationCountLabel;
 
-    // --- FXML UI Elements ---
 
     @FXML private HBox equipmentsHBox;
     @FXML private HBox notificationHBox;
@@ -68,7 +65,6 @@ public class UserDashboardController implements Initializable {
     @FXML private Label sideview_noti_label;
     @FXML private Label logout_label;
 
-    // --- INITIALIZATION ---
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -80,9 +76,8 @@ public class UserDashboardController implements Initializable {
         setupNavigationHandlers();
         loadIcons();
         refreshDashboardData();
-        updateNotificationCount(); // Initial load
+        updateNotificationCount();
 
-        // Auto-refresh every 5 seconds
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(5), e -> {
                     refreshDashboardData();
@@ -101,27 +96,18 @@ public class UserDashboardController implements Initializable {
         if (equipmentsHBox != null) equipmentsHBox.setOnMouseClicked(this::handleEquipmentsClick);
     }
 
-    // --- Navigation Handlers ---
     private void handleHomeClick(MouseEvent event) { navigateTo("userdashboard.fxml", event); }
     private void handleIssuedClick(MouseEvent event) { navigateTo("received.fxml", event); }
 
-    // ⭐ CRITICAL FIX: Acknowledge status on click
     private void handleNotificationClick(MouseEvent event) {
         int currentUserId = SessionManager.getLoggedInUserId();
-        // 1. Mark status updates as acknowledged
         NotificationDAO.acknowledgeRequestStatus(currentUserId);
-        // 2. Immediately update the UI badge (sets it to 0)
         updateNotificationCount();
-        // 3. Navigate to the notification page
         navigateTo("notification_user.fxml", event);
     }
 
     private void handleEquipmentsClick(MouseEvent event) { navigateTo("user_equipments.fxml", event); }
 
-
-    /**
-     * Handles screen navigation.
-     */
     private void navigateTo(String fxmlFile, MouseEvent event) {
         String resourcePath = "/login/" + fxmlFile;
         try {
@@ -132,7 +118,7 @@ public class UserDashboardController implements Initializable {
             stage.setTitle("RentWise");
             stage.show();
         } catch (IOException e) {
-            System.err.println("❌ Navigation Failed: Could not load FXML file: " + resourcePath);
+            System.err.println("Navigation Failed: Could not load FXML file: " + resourcePath);
             e.printStackTrace();
         } catch (Exception e) {
             System.err.println("An unexpected navigation error occurred: " + e.getMessage());
@@ -146,7 +132,6 @@ public class UserDashboardController implements Initializable {
         loadDynamicEquipmentCards();
     }
 
-    // ⭐ NOTIFICATION COUNT LOGIC
     private void updateNotificationCount() {
         if (notificationCountLabel == null) {
             System.err.println("Notification badge label not found in FXML (fx:id=notificationCountLabel).");
@@ -155,7 +140,6 @@ public class UserDashboardController implements Initializable {
 
         try {
             int currentUserId = SessionManager.getLoggedInUserId();
-            // This method uses the correct DAO logic for UNREAD/UNACKNOWLEDGED count
             int count = NotificationDAO.getUnseenNotificationCount(currentUserId);
 
             if (count > 0) {
@@ -169,8 +153,6 @@ public class UserDashboardController implements Initializable {
             notificationCountLabel.setVisible(false);
         }
     }
-
-    // --- (Remaining helper methods are included for completeness) ---
 
     private Image loadImage(String fileName) {
         try {
@@ -214,7 +196,7 @@ public class UserDashboardController implements Initializable {
         int totalEquipments = 0;
         int totalIssued = 0;
         int totalRemaining = 0;
-        int pendingRequests = 0; // Placeholder
+        int pendingRequests = 0;
 
         try {
             List<EquipmentModel> equipments = EquipmentDAO.getAllEquipments();
@@ -229,7 +211,6 @@ public class UserDashboardController implements Initializable {
             if (totalIssuedLabel != null) totalIssuedLabel.setText(String.valueOf(totalIssued));
             if (totalRemainingLabel != null) totalRemainingLabel.setText(String.valueOf(totalRemaining));
 
-            // ⭐ Placeholder: Replace this with an actual DAO call to get the user's pending requests count
             if (totalPendingLabel != null) totalPendingLabel.setText(String.valueOf(pendingRequests));
 
         } catch (Exception e) {
@@ -304,22 +285,17 @@ public class UserDashboardController implements Initializable {
     private void handleLogout(MouseEvent event) {
         System.out.println("User is attempting to log out.");
         try {
-            // 1. Clear the local session data
             SessionManager.clearSession();
 
-            // 2. Safely close the application's single active connection
             if (DatabaseConnection.getActiveConnection() != null) {
                 DatabaseConnection.getActiveConnection().close();
                 System.out.println("Database: Active connection closed on logout.");
             }
 
-            // 3. Clear the static reference to prevent reuse
             DatabaseConnection.clearActiveConnection();
 
-            // 4. Navigate back to the login screen
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
 
-            // Note: I've updated the path to be relative to the package structure
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("login.fxml")));
             Parent root = loader.load();
 

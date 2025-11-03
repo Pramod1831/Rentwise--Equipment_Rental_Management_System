@@ -16,19 +16,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import java.io.File; // Needed for image loading
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
 public class IssuedAdminController {
 
-    // ==========================================================
-    // 1. TableView FXML Fields
-    // ==========================================================
     @FXML private TableView<RequestDisplayModel> issuedTable;
     @FXML private TableColumn<RequestDisplayModel, String> requestDateColumn;
     @FXML private TableColumn<RequestDisplayModel, String> userNameColumn;
@@ -36,10 +31,6 @@ public class IssuedAdminController {
     @FXML private TableColumn<RequestDisplayModel, Integer> quantityColumn;
     @FXML private TableColumn<RequestDisplayModel, String> statusColumn;
 
-    // ==========================================================
-    // 2. Navigation FXML Fields (Sidebar/Top Bar)
-    // ==========================================================
-    // Labels
     @FXML private Label add_equip_label;
     @FXML private Label members_label;
     @FXML private Label issued_label;
@@ -48,8 +39,6 @@ public class IssuedAdminController {
     @FXML private Label home_label;
     @FXML private Label equipments_side_label;
 
-
-    // Icons
     @FXML private ImageView notification_top_icon;
     @FXML private ImageView profile_icon;
     @FXML private ImageView home_icon;
@@ -60,13 +49,11 @@ public class IssuedAdminController {
     @FXML private ImageView equipments_side_icon;
     @FXML private ImageView logout_icon;
 
-    // Dashboard Icons (for image loading completeness)
     @FXML private ImageView equipments_dashboard_icon;
     @FXML private ImageView issued_dashboard_icon;
     @FXML private ImageView remaining_dashboard_icon;
     @FXML private ImageView pending_req_dashboard_icon;
 
-    // HBoxes (CRITICAL for robust navigation)
     @FXML private HBox homeHBox;
     @FXML private HBox addequipHBox;
     @FXML private HBox membersHBox;
@@ -77,25 +64,18 @@ public class IssuedAdminController {
 
     private ObservableList<RequestDisplayModel> issuedRequests = FXCollections.observableArrayList();
 
-    /**
-     * Initializes the controller, sets up the table columns, loads data, and sets up navigation.
-     */
     @FXML
     public void initialize() {
-        // 1. Setup Table Columns
         requestDateColumn.setCellValueFactory(new PropertyValueFactory<>("requestDate"));
         userNameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
         equipmentNameColumn.setCellValueFactory(new PropertyValueFactory<>("equipmentName"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        // 2. Load Data
         loadIssuedRequests();
         issuedTable.setItems(issuedRequests);
 
-        // 3. Load Images
         loadImages();
-
 
         if (logout_icon != null) logout_icon.setOnMouseClicked(this::handleLogout);
         if (logout_label != null) logout_label.setOnMouseClicked(this::handleLogout);
@@ -119,9 +99,6 @@ public class IssuedAdminController {
         if (notification_sideview_icon != null) notification_sideview_icon.setOnMouseClicked(this::handleNotificationClick);
         if (notification_top_icon != null) notification_top_icon.setOnMouseClicked(this::handleNotificationClick);
     }
-    // ==========================================================
-    // 2. Navigation Setup
-    // ==========================================================
 
     private void navigateTo(String fxmlFile, MouseEvent event) {
         try {
@@ -155,15 +132,12 @@ public class IssuedAdminController {
     private void handleLogout(MouseEvent event) {
         System.out.println("User is attempting to log out.");
         try {
-            // FIX: Use the specific method to get and close the active connection
             Connection conn = DatabaseConnection.getActiveConnection(); // Assuming this exists
             if (conn != null && !conn.isClosed()) {
                 conn.close();
                 DatabaseConnection.clearActiveConnection(); // Assuming this exists
                 System.out.println("Database connection closed on logout.");
             }
-            // Assuming SessionManager.clearSession() exists
-            // SessionManager.clearSession();
 
             navigateTo("login.fxml", event);
         } catch (Exception e) {
@@ -173,36 +147,24 @@ public class IssuedAdminController {
         }
     }
 
-    // ==========================================================
-    // 4. DATA LOADING
-    // ==========================================================
-
     private void loadIssuedRequests() {
-        // Assuming EquipmentDAO.getRequestsByStatus and helper methods exist
         List<RequestModel> rawRequests = EquipmentDAO.getRequestsByStatus("Approved");
 
         issuedRequests.clear();
 
         for (RequestModel req : rawRequests) {
-            // Fetch User and Equipment Names using the IDs (Crucial step)
             String userName = EquipmentDAO.getUserNameById(req.getUserId());
             String equipName = EquipmentDAO.getEquipmentNameById(req.getEquipmentId());
 
-            // Create display model and add to list
             issuedRequests.add(new RequestDisplayModel(req, userName, equipName));
         }
         System.out.println("Loaded " + issuedRequests.size() + " currently issued requests.");
     }
 
-    // ==========================================================
-    // 5. IMAGE LOADING UTILITY
-    // ==========================================================
-
     private void loadImages() {
         String BASE_PATH = "Images/";
 
         try {
-            // Load all necessary images
             Image imgNotification = loadImageFromFile(BASE_PATH + "notification_admin.png");
             Image imgProfile = loadImageFromFile(BASE_PATH + "account_admin.png");
             Image imgHome = loadImageFromFile(BASE_PATH + "home.png");
@@ -216,7 +178,6 @@ public class IssuedAdminController {
             Image imgProductsDashboard = loadImageFromFile(BASE_PATH + "products.png");
             Image imgEquipments = loadImageFromFile(BASE_PATH + "equipments_side_icon.png");
 
-            // Assign images to ImageView components
             if (notification_top_icon != null) notification_top_icon.setImage(imgNotification);
             if (profile_icon != null) profile_icon.setImage(imgProfile);
             if (home_icon != null) home_icon.setImage(imgHome);

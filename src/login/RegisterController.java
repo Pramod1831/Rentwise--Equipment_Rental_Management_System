@@ -32,7 +32,6 @@ public class RegisterController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // ✅ Load image directly from resources (inside JAR)
         myImageView.setImage(new Image(
                 Objects.requireNonNull(getClass().getResource("/Images/rentlogo.png")).toExternalForm()
         ));

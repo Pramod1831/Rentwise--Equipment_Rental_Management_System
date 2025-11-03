@@ -16,7 +16,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.scene.control.Alert;
 
 import javax.swing.*;
 import java.io.ByteArrayInputStream;
@@ -29,18 +28,14 @@ import java.util.ResourceBundle;
 
 public class UserEquipmentsController implements Initializable {
 
-    // --- FXML ELEMENTS ---
-    // Sidebar Navigation HBoxes
     @FXML private HBox homeHBox;
     @FXML private HBox logoutHBox;
     @FXML private HBox issuedHBox;
     @FXML private HBox notificationHBox;
 
-    // Content Pane
     @FXML private FlowPane equipmentFlowPane;
     @FXML private ScrollPane equipmentScrollPane;
 
-    // Sidebar and Top Bar Icons
     @FXML private ImageView home_icon;
     @FXML private ImageView notification_top_icon;
     @FXML private ImageView profile_icon;
@@ -50,8 +45,6 @@ public class UserEquipmentsController implements Initializable {
     @FXML private ImageView logout_icon;
 
 
-    // --- INITIALIZATION ---
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadIcons();
@@ -59,34 +52,25 @@ public class UserEquipmentsController implements Initializable {
         setupNavigationHandlers();
     }
 
-    // ----------------------------------------------------------------------
-    //                       SETUP AND NAVIGATION
-    // ----------------------------------------------------------------------
-
     private void setupNavigationHandlers() {
         if (logoutHBox != null) {
             logoutHBox.setOnMouseClicked(event -> handleLogout());
         }
 
-        // FIX for the previous NullPointerException: ensure the FXML path is correct
         if (homeHBox != null) {
             homeHBox.setOnMouseClicked(event -> navigateTo("userdashboard.fxml", homeHBox));
         }
 
         if (issuedHBox != null) {
-            // Assuming a dedicated FXML exists for user issued items
             issuedHBox.setOnMouseClicked(event -> navigateTo("received.fxml", issuedHBox));
         }
         if (notificationHBox != null) {
-            // Assuming a dedicated FXML exists for user notifications
             notificationHBox.setOnMouseClicked(event -> navigateTo("notification_user.fxml", notificationHBox));
         }
     }
 
     private void navigateTo(String fxmlFile, HBox sourceHBox) {
         try {
-            // CRITICAL: getClass().getResource(fxmlFile) will return null if the path is wrong.
-            // Ensure fxmlFile is correct (e.g., "user_dashboard.fxml") AND in the right place.
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(fxmlFile)));
             Parent root = loader.load();
 
@@ -103,7 +87,6 @@ public class UserEquipmentsController implements Initializable {
         }
     }
 
-    // --- IMAGE LOADING (Same as Dashboard Controller) ---
 
     private Image loadImage(String fileName) {
         try {
@@ -137,10 +120,6 @@ public class UserEquipmentsController implements Initializable {
         if (notification_sideview_icon != null) notification_sideview_icon.setImage(loadImage("notification_admin.png"));
         if (logout_icon != null) logout_icon.setImage(loadImage("logout.png"));
     }
-
-    // ----------------------------------------------------------------------
-    //                     DYNAMIC EQUIPMENT CARD LOADING
-    // ----------------------------------------------------------------------
 
     private void loadEquipmentCards() {
         if (equipmentFlowPane == null) {
@@ -203,17 +182,6 @@ public class UserEquipmentsController implements Initializable {
         return cardVBox;
     }
 
-    // ----------------------------------------------------------------------
-    //                          ACTION HANDLERS
-    // ----------------------------------------------------------------------
-
-    // Inside your controller class (e.g., UserDashboardController.java)
-
-    // NOTE: You must replace this with the actual way you get the logged-in user's ID.
-// For demonstration, we'll use a placeholder variable.
-    //private static final int CURRENT_USER_ID = 1; // <<--- REPLACE WITH REAL USER ID LOGIC
-
-    // Inside login.UserEquipmentsController.java
 
     private void handleRequestAction(EquipmentModel equipment) {
         System.out.println("Request action initiated for: " + equipment.getName());
@@ -231,7 +199,6 @@ public class UserEquipmentsController implements Initializable {
         int quantity = 0;
         boolean validInput = false;
 
-        // --- Input Validation Loop using JOptionPane ---
         while (!validInput) {
             String quantityStr = JOptionPane.showInputDialog(
                     null,
@@ -256,7 +223,7 @@ public class UserEquipmentsController implements Initializable {
                             "Invalid Input",
                             JOptionPane.ERROR_MESSAGE
                     );
-                } else { // quantity > availableQuantity
+                } else {
                     JOptionPane.showMessageDialog(null,
                             "The quantity requested (" + quantity + ") exceeds the available stock of " + availableQuantity + ".",
                             "Invalid Quantity",
@@ -272,9 +239,7 @@ public class UserEquipmentsController implements Initializable {
             }
         }
 
-        // --- Database Submission using SessionManager ---
 
-        // 1. Get the current logged-in user ID
         int currentUserId = SessionManager.getLoggedInUserId();
 
         if (currentUserId == -1) {
@@ -285,14 +250,12 @@ public class UserEquipmentsController implements Initializable {
 
         System.out.println("Attempting to submit request for User ID " + currentUserId + ".");
 
-        // 2. Call the DAO method with the correct User ID
         boolean success = EquipmentDAO.createNewRequest(
-                currentUserId, // <-- Use the correct ID from SessionManager
+                currentUserId,
                 equipment.getId(),
                 quantity
         );
 
-        // --- Feedback to User ---
         if (success) {
             System.out.println("User requested " + quantity + " of " + equipment.getName() + ". Request sent successfully.");
             JOptionPane.showMessageDialog(null,
@@ -314,12 +277,8 @@ public class UserEquipmentsController implements Initializable {
         boolean success = EquipmentDAO.requestReturn(requestId);
 
         if (success) {
-            // Optional: Show success message to user
-            // You might want to refresh the list to show 'Return Pending' status.
             System.out.println("Return initiated successfully. Waiting for admin approval.");
-            // refreshEquipmentList(); // Call your method to reload the UI
         } else {
-            // Show error message
             System.err.println("Failed to initiate return request.");
         }
     }
@@ -327,7 +286,6 @@ public class UserEquipmentsController implements Initializable {
     private void handleLogout() {
         System.out.println("User is attempting to log out.");
         if (logoutHBox != null) {
-            // Assuming login.fxml is the file for the login screen
             navigateTo("login.fxml", logoutHBox);
         }
     }

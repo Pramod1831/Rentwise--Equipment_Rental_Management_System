@@ -26,7 +26,6 @@ import java.util.Objects;
 
 public class AddEquipController {
 
-    // --- FXML Fields ---
     @FXML private ImageView home_icon;
     @FXML private ImageView logout_icon;
     @FXML private ImageView add_equip_icon;
@@ -36,7 +35,6 @@ public class AddEquipController {
     @FXML private Button chooseImageButton;
     @FXML private ImageView imageView;
 
-    // --- Navigation Containers (HBox) ---
     @FXML private HBox homeHBox;
     @FXML private HBox membersHBox;
     @FXML private HBox issuedHBox;
@@ -44,10 +42,6 @@ public class AddEquipController {
     @FXML private HBox notificationHBox;
     @FXML private HBox logoutHBox;
     @FXML private HBox equipmentsHBox;
-
-
-    // --- Other Image Views/Labels ---
-
 
     @FXML private ImageView notification_top_icon;
     @FXML private ImageView profile_icon;
@@ -75,9 +69,6 @@ public class AddEquipController {
     public void initialize() {
         loadImages();
 
-        // --- Attach click handlers to Labels/Icons/HBoxes for navigation ---
-
-
         if (logout_icon != null) logout_icon.setOnMouseClicked(this::handleLogout);
         if (logout_label != null) logout_label.setOnMouseClicked(this::handleLogout);
 
@@ -100,11 +91,6 @@ public class AddEquipController {
         if (notification_sideview_icon != null) notification_sideview_icon.setOnMouseClicked(this::handleNotificationClick);
         if (notification_top_icon != null) notification_top_icon.setOnMouseClicked(this::handleNotificationClick);
     }
-
-
-    // ==========================================================
-    // 2. Navigation Setup
-    // ==========================================================
 
     private void navigateTo(String fxmlFile, MouseEvent event) {
         try {
@@ -138,15 +124,12 @@ public class AddEquipController {
     private void handleLogout(MouseEvent event) {
         System.out.println("User is attempting to log out.");
         try {
-            // FIX: Use the specific method to get and close the active connection
             Connection conn = DatabaseConnection.getActiveConnection(); // Assuming this exists
             if (conn != null && !conn.isClosed()) {
                 conn.close();
                 DatabaseConnection.clearActiveConnection(); // Assuming this exists
                 System.out.println("Database connection closed on logout.");
             }
-            // Assuming SessionManager.clearSession() exists
-            // SessionManager.clearSession();
 
             navigateTo("login.fxml", event);
         } catch (Exception e) {
@@ -155,11 +138,6 @@ public class AddEquipController {
             navigateTo("login.fxml", event);
         }
     }
-
-    //----------------------------------------------------------------------
-    //                           ACTION HANDLERS (Unchanged)
-    //----------------------------------------------------------------------
-
     @FXML
     private void handleChooseImage(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -208,8 +186,6 @@ public class AddEquipController {
         }
 
         try {
-            // Assuming EquipmentDAO.addEquipment exists and is correct
-            // EquipmentDAO.addEquipment(name, quantity, quantity, selectedImageBytes); // Assuming initial remaining = quantity
 
             System.out.println("Equipment added successfully!");
             nameField.clear();
@@ -222,10 +198,6 @@ public class AddEquipController {
             e.printStackTrace();
         }
     }
-
-    //----------------------------------------------------------------------
-    //                           IMAGE UTILITY (Unchanged)
-    //----------------------------------------------------------------------
 
     private void loadImages() {
         String BASE_PATH = "Images/";

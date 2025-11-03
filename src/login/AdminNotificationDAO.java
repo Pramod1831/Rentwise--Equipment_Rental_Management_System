@@ -7,15 +7,7 @@ import java.sql.SQLException;
 
 public class AdminNotificationDAO {
 
-    /**
-     * Retrieves the count of all requests requiring admin action.
-     * This includes:
-     * 1. New Loan Requests (status = 'Pending')
-     * 2. Return Requests (status = 'Return Pending')
-     * @return The total number of requests the admin must act upon.
-     */
     public static int getPendingActionCount() {
-        // Query to count requests that need Admin attention
         String query =
                 "SELECT COUNT(*) FROM request " +
                         "WHERE status IN ('Pending', 'Return Pending')";

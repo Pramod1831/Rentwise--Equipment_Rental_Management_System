@@ -22,40 +22,31 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class AdminDashboardController implements Initializable {
 
-    // ==========================================================
-    // 1. Dashboard and Sidebar FXML Fields
-    // ==========================================================
     @FXML private ListView<String> listView_page;
     @FXML private PieChart pieChart_view;
 
-    // Summary Labels
     @FXML private Label equipmentsCountLabel;
     @FXML private Label issuedCountLabel;
     @FXML private Label remainingCountLabel;
     @FXML private Label pendingReqCountLabel;
     @FXML private Label equipments_side_label;
 
-    // Sidebar Labels (Menu Clicks)
     @FXML private Label home_label;
     @FXML private Label add_equip_label;
     @FXML private Label members_label;
     @FXML private Label issued_label;
     @FXML private Label sideview_noti_label;
-    // Central Content VBox
     @FXML private VBox centerVBox;
 
-    // Image/Logout Fields
     @FXML private ImageView notification_top_icon;
     @FXML private ImageView profile_icon;
     @FXML private ImageView home_icon;
@@ -72,32 +63,26 @@ public class AdminDashboardController implements Initializable {
     @FXML private Label logout_label;
     @FXML private HBox members_Hbox;
 
-    // ⭐ Notification Badge HBox and Label
     @FXML private HBox notificationHBox;
     @FXML public Label notificationCountLabel;
 
-    // Must be implemented for FXML Controllers
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // initialize() signature was missing ResourceBundle, fixing this common JavaFX pattern.
         initialize();
     }
 
-    // ==========================================================
-    // 2. Initialization (Added Timeline and Notification Logic)
-    // ==========================================================
     @FXML
     public void initialize() {
         loadEquipmentData();
         loadImages();
         setupNavigationHandlers();
-        updateNotificationCount(); // Initial load
+        updateNotificationCount();
 
-        // Auto-refresh every 5 seconds
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(5), e -> {
-                    loadEquipmentData(); // Refreshes all dashboard totals
-                    updateNotificationCount(); // Refreshes the badge
+                    loadEquipmentData();
+                    updateNotificationCount();
                 })
         );
         timeline.setCycleCount(Animation.INDEFINITE);
@@ -105,7 +90,6 @@ public class AdminDashboardController implements Initializable {
     }
 
     private void setupNavigationHandlers() {
-        // Wiring HBoxes to MouseEvent handlers
         if (logout_icon != null) logout_icon.setOnMouseClicked(this::handleLogout);
         if (logout_label != null) logout_label.setOnMouseClicked(this::handleLogout);
 
@@ -131,11 +115,7 @@ public class AdminDashboardController implements Initializable {
         if (notification_top_icon != null) notification_top_icon.setOnMouseClicked(this::handleNotificationClick);
     }
 
-    // ==========================================================
-    // 3. Load Dashboard Data and Notification Count
-    // ==========================================================
     private void loadEquipmentData() {
-        // WARNING: This method (and the DAOs it calls) is likely causing connection spam.
         List<EquipmentModel> equipments = EquipmentDAO.getAllEquipments();
 
         ObservableList<String> listItems = FXCollections.observableArrayList();
@@ -143,7 +123,6 @@ public class AdminDashboardController implements Initializable {
         int totalRemaining = 0;
         int totalQuantity = 0;
 
-        // Count for Admin Action Requests (Pending and Return Pending)
         int totalPendingRequests = EquipmentDAO.getAdminActionRequests().size();
 
         for (EquipmentModel eq : equipments) {
@@ -162,29 +141,22 @@ public class AdminDashboardController implements Initializable {
 
         if (pieChart_view != null) {
             ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(
-                    // Order matters for styling, Issued must be first, Remaining second
                     new PieChart.Data("Issued", totalIssued),
                     new PieChart.Data("Remaining", totalRemaining)
             );
             pieChart_view.setData(pieData);
 
-            // ⭐ Applying custom styles for orange and red after data is set
             for (PieChart.Data data : pieChart_view.getData()) {
                 Node node = data.getNode();
                 if (data.getName().equals("Issued")) {
-                    // Set Issued slice color to a vivid orange
                     node.setStyle("-fx-pie-color: #e74c3c;");
                 } else if (data.getName().equals("Remaining")) {
-                    // Set Remaining slice color to a strong red
                     node.setStyle("-fx-pie-color: #f39c12;");
                 }
             }
         }
     }
 
-    /**
-     * Updates the notification count based on the number of unread admin actions.
-     */
     private void updateNotificationCount() {
         if (notificationCountLabel == null) {
             System.err.println("Notification badge label not found (fx:id=notificationCountLabel).");
@@ -192,7 +164,6 @@ public class AdminDashboardController implements Initializable {
         }
 
         try {
-            // WARNING: This method (and the DAO it calls) is likely causing connection spam.
             int count = AdminNotificationDAO.getPendingActionCount();
 
             if (count > 0) {
@@ -207,14 +178,6 @@ public class AdminDashboardController implements Initializable {
         }
     }
 
-
-    // ==========================================================
-    // 4. Scene Switching Logic
-    // ==========================================================
-
-    /**
-     * Safely navigates to a new FXML scene using the source node of the MouseEvent.
-     */
     private void navigateTo(String fxmlFile, MouseEvent event) {
         String resourcePath = "/login/" + fxmlFile;
         try {
@@ -252,18 +215,13 @@ public class AdminDashboardController implements Initializable {
     @FXML private void handleEquipmentsClick(MouseEvent event) { navigateTo("equipments.fxml", event); }
 
     @FXML private void handleNotificationClick(MouseEvent event) {
-        // Corrected FXML typo from 'notificatoin_admin.fxml' to 'notification_admin.fxml'
         navigateTo("notificatoin_admin.fxml", event);
     }
 
-    // ==========================================================
-    // 5. Logout Functionality
-    // ==========================================================
     @FXML
     private void handleLogout(MouseEvent event) {
         System.out.println("Admin is attempting to log out.");
         try {
-            // Use the centralized connection management for closing
             Connection conn = DatabaseConnection.getActiveConnection();
             if (conn != null && !conn.isClosed()) {
                 conn.close();
@@ -276,14 +234,10 @@ public class AdminDashboardController implements Initializable {
         } catch (Exception e) {
             System.err.println("Unexpected error during logout: " + e.getMessage());
             e.printStackTrace();
-            // Fallback navigation
             navigateTo("login.fxml", event);
         }
     }
 
-    // ==========================================================
-    // 6. Image Loading Utility
-    // ==========================================================
     private void loadImages() {
         String BASE_PATH = "Images/";
 
